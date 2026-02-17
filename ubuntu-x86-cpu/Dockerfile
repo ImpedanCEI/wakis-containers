@@ -25,3 +25,8 @@ SHELL ["conda", "run", "-n", "wakis", "/bin/bash", "-c"]
 RUN pip install --no-cache-dir wakis['notebook'] && \
     pip uninstall vtk -y && \
     pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
+
+# Set bash as entrypoint
+ENTRYPOINT ["/bin/bash"]
+
+RUN echo 'source /opt/conda/etc/profile.d/conda.sh && conda activate wakis' >> /root/.bashrc
