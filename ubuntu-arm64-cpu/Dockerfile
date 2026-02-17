@@ -16,9 +16,11 @@ RUN apt-get update && \
     libgl1 libglx-mesa0 libosmesa6 libglu1-mesa libx11-6 libxext6 libxrender1 libxrandr2 libxi6 libxinerama1 libxcursor1 && \
     rm -rf /var/lib/apt/lists/*
 
+USER wakisuser
+
 # Install Miniforge (x86_64)
 ENV MINIFORGE_VERSION=latest
-ENV CONDA_DIR=/opt/conda
+ENV CONDA_DIR=/home/wakisuser/miniforge3
 RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh -O /tmp/miniforge.sh && \
     bash /tmp/miniforge.sh -b -p $CONDA_DIR && \
     rm /tmp/miniforge.sh
@@ -183,4 +185,5 @@ RUN conda install -y -n base -c conda-forge mamba && \
     conda run -n wakis pip install wakis && \
     conda clean -afy
 
-RUN echo 'source /opt/conda/etc/profile.d/conda.sh && conda activate wakis' >> /root/.bashrc
+RUN conda init bash
+RUN echo 'conda activate wakis' >> /home/wakisuser/.bashrc
