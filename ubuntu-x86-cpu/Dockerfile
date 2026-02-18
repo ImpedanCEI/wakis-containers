@@ -1,11 +1,8 @@
 FROM ubuntu:22.04
 
 # Non-root user for safety UID and GID outside of normal range to avoid conflicts with host users
-ARG UID=80000
-ARG GID=80000
-
-RUN groupadd -g ${GID} wakisuser \
-    && useradd -m -s /bin/bash -u ${UID} -g ${GID} wakisuser
+# Not fixing UID/GID, supposed to use --user when running container to map to host user
+RUN useradd -m -s /bin/bash wakisuser
 
 WORKDIR /home/wakisuser
 
@@ -14,6 +11,7 @@ RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
 
+RUN chown -R wakisuser:wakisuser /home/wakisuser
 # Switch to user for Miniforge setup and subsequent steps
 USER wakisuser
 
