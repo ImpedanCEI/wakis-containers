@@ -1,11 +1,8 @@
 FROM --platform=arm64 ubuntu:24.04
 
 # Non-root user for safety UID and GID outside of normal range to avoid conflicts with host users
-ARG UID=80000
-ARG GID=80000
-
-RUN groupadd -g ${GID} wakisuser \
-    && useradd -m -s /bin/bash -u ${UID} -g ${GID} wakisuser
+# Not fixing UID/GID, supposed to use --user when running container to map to host user
+RUN useradd -m -s /bin/bash wakisuser
 
 WORKDIR /home/wakisuser
 
@@ -16,6 +13,8 @@ RUN apt-get update && \
     libgl1 libglx-mesa0 libosmesa6 libglu1-mesa libx11-6 libxext6 libxrender1 libxrandr2 libxi6 libxinerama1 libxcursor1 && \
     rm -rf /var/lib/apt/lists/*
 
+RUN chown -R wakisuser:wakisuser /home/wakisuser
+# Switch to user for Miniforge setup and subsequent steps
 USER wakisuser
 
 # Install Miniforge (x86_64)
