@@ -34,9 +34,9 @@ RUN conda create -y -n wakis python=3.11 && \
 SHELL ["conda", "run", "-n", "wakis", "/bin/bash", "-c"]
 
 # Install pip packages (example)
-RUN pip install --no-cache-dir wakis['notebook'] && \
-    pip uninstall vtk -y && \
-    pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
+RUN conda run -n wakis pip install --no-cache-dir wakis['notebook'] && \
+    conda run -n wakis pip uninstall vtk -y && \
+    conda run -n wakis pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
 
 # Set bash as entrypoint
 # ENTRYPOINT ["/bin/bash"]
