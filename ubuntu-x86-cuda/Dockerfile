@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.8.1-base-ubuntu24.04
+FROM nvidia/cuda:12.8.0-base-ubuntu24.04
 
 # Non-root user for safety UID and GID outside of normal range to avoid conflicts with host users
 # Not fixing UID/GID, supposed to use --user when running container to map to host user
@@ -9,6 +9,7 @@ WORKDIR /home/wakisuser
 # Install system dependencies while still in root 
 RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates curl git && \
+    apt-get install -y nvidia-cuda-toolkit && \
     rm -rf /var/lib/apt/lists/*
 
 RUN chown -R wakisuser:wakisuser /home/wakisuser
@@ -32,11 +33,8 @@ RUN conda create -y -n wakis python=3.11 && \
 SHELL ["conda", "run", "-n", "wakis", "/bin/bash", "-c"]
 
 # Install pip packages (example)
-RUN conda run -n wakis pip install cupy-cuda12x && \
-    conda run -n wakis pip install --no-cache-dir wakis['notebook'] && \
-    conda run -n wakis pip uninstall vtk -y && \
-    conda run -n wakis pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
-
+# RUN conda install -y -n wakis -c conda-forge -y "numpy>=2" "cuda-version<=12.8" "cupy>=14"
+RUN conda run -n wakis pip install cupy-cuda12x
 # Set bash as entrypoint
 # ENTRYPOINT ["/bin/bash"]
 
